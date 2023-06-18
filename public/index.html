@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>print express: Upload and Print</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <link rel="icon" href="print-express-website-favicon-black.png" type="image/x-icon">
+  <style>
+    /* CSS styles */
+
+    /* Contenitore principale */
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    /* Input file */
+    #fileInput {
+      display: none; /* Nasconde l'elemento di input file */
+    }
+
+    /* Nome file selezionato */
+    #selectedFileName {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    /* Selettore del numero di copie */
+    .copy-selector {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    /* Larghezza del campo input del numero di copie */
+    .copy-selector input[type="number"] {
+      width: 80px;
+    }
+
+    /* Spazio tra il selettore del numero di copie e il bottone Carica File */
+    .copy-selector .btn-primary {
+      margin-left: 10px;
+    }
+
+    .header {
+      background-color: #007BFF;
+      padding: 10px;
+      color: white;
+      height: 50px; /* Altezza dell'header */
+    }
+
+    /* Logo */
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      width: 150px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header"><img src="logo-no-background.png" alt="Print Express Logo" class="logo">
+    <div class="container">
+      
+    </div>
+  </div>
+
+
+  <div class="container">
+    <label for="fileInput" class="btn btn-outline-primary">
+      <i class="fas fa-upload"></i>
+      <span>Carica file</span>
+      <input type="file" id="fileInput" accept=".pdf, .html, .png, .jpg, .jpeg,.docx, .doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document, .txt" onchange="displayFileName()">
+    </label>
+    <div class="copy-selector">
+      Numero Copie: 
+      <input type="number" class="form-control" id="copyInput" min="1" value="1">
+      <button onclick="stampare()" class="btn btn-success">Stampa</button>
+    </div>
+    <div id="selectedFileName"></div>
+
+    <div id="okPrint" style="background-color: grey; visibility: hidden;"> Il tuo file è in stampa!</div>
+    <div id="koPrint" style="background-color: grey; visibility: hidden;"> Si è verificato un errore, ritenta!</div>
+  </div>
+
+  <script>
+    function displayFileName() {
+      var fileInput = document.getElementById('fileInput');
+      var fileName = fileInput.files[0].name;
+      var selectedFileName = document.getElementById('selectedFileName');
+      selectedFileName.textContent = fileName;
+    }
+
+    function stampare() {
+      var fileInput = document.getElementById('fileInput');
+      var file = fileInput.files[0];
+
+      var copyInput = document.getElementById('copyInput');
+      var numCopies = parseInt(copyInput.value);
+
+      var formData = new FormData();
+      formData.append('user-file', file);
+      formData.append('num_copies', numCopies);
+      console.log(formData)
+      fetch('/print', {
+          method: 'POST',
+          body: formData
+      })
+      .then(function(response) {
+          document.getElementById('okPrint').style.visibility = 'visible'
+          setTimeout(()=>{document.getElementById('okPrint').style.visibility = 'hidden'}, 9000);
+      })
+      .catch(function(error) {
+        document.getElementById('koPrint').style.visibility = 'visible'
+        setTimeout(()=>{document.getElementById('koPrint').style.visibility = 'hidden'}, 9000);
+      });
+    }
+  </script>
+</body>
+</html>

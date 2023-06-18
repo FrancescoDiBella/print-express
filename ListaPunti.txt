@@ -1,0 +1,58 @@
+Impostazioni generali (2 elementi diversi obbligatori)
+- Splash Screen
+- Icona gioco
+
+Main menu
+- Load Game (CheckPoint in mezzo ad un livello)
+- Options
+	- Sound/Music
+	- Resolution/Quality
+- Credits Screen
+
+Tutorial
+- Schermata statica: Implementate come dialoghi nella porzione iniziale di gioco, attivate 
+	tramite l'interazione con i punti escalamativi rossi. ( files: Scripts/UI/DialogueController.cs , 
+	Scripts/Collectibles/ExclamationMark.cs, Oggetti in scena: ExclamationPoint in TutorialArea ) 
+
+GamePlay (3 elementi diversi obbligatori)
+- Score: (file: Scripts/Managers/GameManager)
+- PowerUp: Esistono 3 powerup all'interno del gioco che spawnano in modo casuale 
+	all'interno degli scrigni sparsi per tutta la mappa di gioco. (files: Scripts/FroggyScripts/PickUpObjects, 
+	Script/Managers/PowerUpManager, Script/Managers/SpawnManager, Script/Utility/SpawnPoint.cs, Scripts/PowerUp/, 
+	Scripts/Utility/SpawnChanceCalculator, Oggetti in scena: ChestSpawnPoints contiene i forzieri)
+- Presenza di nemici/sfida
+	- Livelli di difficoltà
+	- Difficoltà crescente: EnemyManager in scena che contiene Spawn separati per area di gioco, il quale 
+		permette di aggiungere nemici più forti man mano che ci si allontana dalla zona iniziale.
+		I nemici spawnano in modo casuale in posizioni pre-determinate.
+	- AI complicata: Utilizzo di NavMesh per seguire il giocatore e comportamenti custom per ogni tipo di nemico:
+		Lo Slime è il nemico base, La TurtleShell si nasconde nel guscio quando il player si avvicina, diventando invulnerabile
+		e richiedendo l'ausilio dei PowerUp per sconfiggerla, Il Beholder si teletrasporta attorno 
+		al player e attacca anche a distanza.  
+		(files: Scripts/EnemyScipts/ , Script/Managers/SpawnManager, Script/Utility/SpawnPoint.cs)
+
+Strutture (8 elementi diversi obbligatori)
+- PlayerPrefs
+- Singleton: (files: Scripts/Managers/CollectiblesManager.cs, Scripts/Managers/PlayerManager.cs, Scripts/Managers/PowerUpManager.cs 
+	Scripts/UI/DialogueController.cs)
+- Coroutines: (files: Scripts/CameraScripts/CameraRecenter.cs , Scripts/EnemyScipts/, Scripts/LevelDesign/FlameRing.cs, 
+	Scripts/LevelDesign/SnowMan.cs) 
+- Enums: (files Scripts/Interfaces/IHittable.cs, Scripts/Extensions/Vector3Extension.cs)
+- Generics(Anche interfacce): (files  Scripts/Interfaces/IHittable.cs)
+- Method overload: (files Scripts/Managers/PowerUpManager.cs, Scripts/Extensions/TransformExtension.cs)
+- Presenza di ereditarietà: (Gerarchie: Enemy->BeholderEnemy, TurtleShellEnemy, SlimeEnemy ; PowerUp->Shield, AttackBuff, Star)
+	- Overriding: Enemy e PowerUp sono classi Astratte e dunque tutte le sotto classi fanno overriding anche di metodi non abstract.
+- Interfacce: (files Scripts/Interfaces)
+- ExtensionMethods: (files Scripts/Extensions/)
+- Eventi: Per gestire la pausa e la fine del gioco. (files: Scripts/Managers/PauseController, 
+	Scripts/Collectibles/FinalDiamond)
+- Animazioni originali: (files Assets/CustomAnimations/)
+- Sound
+	- Soundtrack
+	- Altri suoni: Alcuni esempi: Coin, BigCoin, SaveGame, Diamond.
+- Raycast: (files Scripts/FroggyScripts/Movement.cs:336)
+- User Interface: Elementi grafici: HealthBar, CoinsCointainer, BigCoinsContainer, DiamondsCointainer, PowerUpCointainer x 2, 
+	DialoguePanel
+
+EXTRA
+- Particelle: Vedere oggetto in scena PlayerContainer, Coins, Diamond, Boss, SandTornado ecc.
