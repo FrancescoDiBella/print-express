@@ -3,13 +3,13 @@ const express = require('express');
 const app = express();
 const multer = require('multer');
 const fs = require('fs');
-const { Console } = require("console");
+const { exec } = require('child_process');
 
 app.use(express.static('public'));
 app.use(express.json());
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'uploads/'); // Specifica la cartella di destinazione per i file
+        cb(null, './public/uploads/'); // Specifica la cartella di destinazione per i file
     },
     filename: function (req, file, cb) {
         const originalname = file.originalname;
@@ -30,15 +30,19 @@ app.post('/print', (req, res) => {
             copies: req.body.num_copies
         }
         console.log(options)
-        printer.print('./uploads/'+req.file.filename, options)
-            .then(()=>{
-                fs.unlink('./uploads/'+req.file.filename, (err) => {
-                    if (err) throw err;
-                    console.log('./uploads/'+req.file.filename + 'was deleted');
-                });
-                res.sendStatus(200);
+        const command = 'lp -d DCP197C -n '+options.copies+' ./public/uploads/'+req.file.filename;
+        exec(command, (error, stdout, stderr) => {
+            fs.unlink('./public/uploads/'+req.file.filename, (err) => {
+                if (err) 
+                console.log('./public/uploads/'+req.file.filename + 'was deleted');
             });
-    }, 1000);
+            if (error) {
+              console.error(`exec error: ${error}`);
+              throw error;
+            }
+            res.sendStatus(200);
+        });
+    }, 500);
 });
 
 app.listen(3000, () => {
